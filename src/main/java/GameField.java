@@ -14,6 +14,8 @@ public class GameField extends JPanel implements ActionListener {
 
     private int [] x = new int [ALL_DOTS];
     private int [] y = new int [ALL_DOTS];
+    private int [] arrayAppleY = new int [3];
+    private int [] arrayAppleX = new int [3];
 
     private int appleX;
     private int appleY;
@@ -33,7 +35,8 @@ public class GameField extends JPanel implements ActionListener {
         for (int i = 0; i < 3 ; i++) {
             appleX = new Random().nextInt(20) * DOT_SIZE;
             appleY = new Random().nextInt(20) * DOT_SIZE;
-
+            arrayAppleX[i] = appleX;
+            arrayAppleY[i] = appleY;
         }
     }
     public void initGame(){
@@ -45,6 +48,21 @@ public class GameField extends JPanel implements ActionListener {
         timer = new Timer(250, this);
         timer.start();
         createApple();
+    }
+    public void checkApple(){
+
+            if (x[0] == arrayAppleX[0] && y[0] == arrayAppleY[0]) {
+                dots++;
+                createApple();
+            }
+            if (x[0] == arrayAppleX[1] && y[0] == arrayAppleY[1]) {
+                dots++;
+                createApple();
+            }
+            if (x[0] == arrayAppleX[2] && y[0] == arrayAppleY[2]) {
+                dots++;
+                createApple();
+            }
     }
 
     @Override
