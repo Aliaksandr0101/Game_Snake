@@ -66,9 +66,43 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        if (inGame) {
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (inGame){
+            for (int i = 0; i < 3 ; i++) {
+                g.drawImage(apple, arrayAppleX[i], arrayAppleY[i], this);
+            }
 
+            for (int i = 0; i < dots ; i++) {
+                g.drawImage(dot, x[i], y[i], this);
+            }
+        }else {
+            String str = "GAME OVER";
+            g.setColor(Color.CYAN);
+            g.drawString(str, SIZE/6, SIZE/2);
         }
     }
-}
+
+    public void checkCollision(){
+
+           for (int i = 0; i < dots ; i++) {
+              if (x[0] == x[i] && y[0] == y[i]) {
+                inGame = false;
+            }
+          }
+
+
+         if (x[0] > SIZE)
+             x[0] = 0;
+
+         if (x[0] < 0)
+            x[0] = SIZE;
+
+         if (y[0] > SIZE)
+             y[0] = 0;
+
+         if (y[0] < 0)
+             y[0] = SIZE;
+    }
+    }
+
