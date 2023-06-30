@@ -32,7 +32,7 @@ public class GameField extends JPanel implements ActionListener {
     public void loadImage(){
         ImageIcon addPictureApple = new ImageIcon("apple.jpg");
         apple = addPictureApple.getImage();
-        ImageIcon addPictureSnake = new ImageIcon("dot.jpg");
+        ImageIcon addPictureSnake = new ImageIcon("snake.jpg");
         snake = addPictureSnake.getImage();
     }
 
@@ -76,7 +76,7 @@ public class GameField extends JPanel implements ActionListener {
             }
         }else {
             String str = "end of this game";
-            g.setColor(Color.BLACK);
+            g.setColor(Color.WHITE);
             g.drawString(str, SIZE/3, SIZE/3);
         }
     }
@@ -89,11 +89,11 @@ public class GameField extends JPanel implements ActionListener {
             }
           }
 
-         if (x[0] > SIZE)
+         if (x[0] > SIZE-1)
              x[0] = 0;
 
          if (x[0] < 0)
-            x[0] = SIZE;
+            x[0] = SIZE-1;
 
          if (y[0] > SIZE)
              inGame = false;
@@ -112,7 +112,7 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     public  GameField(){
-        setBackground(Color.green);
+        setBackground(Color.BLACK);
         loadImage();
         initGame();
         addKeyListener(new FiledKeyListener());
