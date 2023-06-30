@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Random;
 
 public class GameField extends JPanel implements ActionListener {
@@ -9,7 +11,7 @@ public class GameField extends JPanel implements ActionListener {
     private final  int DOT_SIZE = 16;
     private final  int ALL_DOTS = 400;
 
-    private Image dot;
+    private Image snake;
     private Image apple;
 
     private int [] x = new int [ALL_DOTS];
@@ -17,52 +19,48 @@ public class GameField extends JPanel implements ActionListener {
     private int [] arrayAppleY = new int [3];
     private int [] arrayAppleX = new int [3];
 
-    private int appleX;
-    private int appleY;
-    private int dots;
+    private int sizeSnake;
     private Timer timer;
 
+
     private boolean inGame = true;
+    private boolean left = false;
+    private boolean right = true;
+    private boolean up = false;
+    private boolean down = false;
 
     public void loadImage(){
-        ImageIcon iia = new ImageIcon("apple.jpg");
-        apple = iia.getImage();
-        ImageIcon iid = new ImageIcon("dot.jpg");
-        dot = iid.getImage();
+        ImageIcon addPictureApple = new ImageIcon("apple.jpg");
+        apple = addPictureApple.getImage();
+        ImageIcon addPictureSnake = new ImageIcon("dot.jpg");
+        snake = addPictureSnake.getImage();
     }
 
     public void createApple(){
         for (int i = 0; i < 3 ; i++) {
-            appleX = new Random().nextInt(20) * DOT_SIZE;
-            appleY = new Random().nextInt(20) * DOT_SIZE;
-            arrayAppleX[i] = appleX;
-            arrayAppleY[i] = appleY;
+            arrayAppleX[i] = new Random().nextInt(19) * DOT_SIZE;
+            arrayAppleY[i] = new Random().nextInt(19) * DOT_SIZE;
         }
     }
     public void initGame(){
-        dots = 3;
-        for (int i = 0; i < dots ; i++) {
+        sizeSnake = 3;
+        for (int i = 0; i < sizeSnake ; i++) {
             x[i] = 48 - i * DOT_SIZE;
             y[i] = 48;
         }
-        timer = new Timer(250, this);
+        timer = new Timer(150, this);
         timer.start();
         createApple();
     }
     public void checkApple(){
 
-            if (x[0] == arrayAppleX[0] && y[0] == arrayAppleY[0]) {
-                dots++;
+        for (int i = 0; i < 3 ; i++) {
+
+            if (x[0] == arrayAppleX[i] && y[0] == arrayAppleY[i]) {
+                sizeSnake++;
                 createApple();
             }
-            if (x[0] == arrayAppleX[1] && y[0] == arrayAppleY[1]) {
-                dots++;
-                createApple();
-            }
-            if (x[0] == arrayAppleX[2] && y[0] == arrayAppleY[2]) {
-                dots++;
-                createApple();
-            }
+        }
     }
 
     @Override
@@ -73,24 +71,23 @@ public class GameField extends JPanel implements ActionListener {
                 g.drawImage(apple, arrayAppleX[i], arrayAppleY[i], this);
             }
 
-            for (int i = 0; i < dots ; i++) {
-                g.drawImage(dot, x[i], y[i], this);
+            for (int i = 0; i < sizeSnake ; i++) {
+                g.drawImage(snake, x[i], y[i], this);
             }
         }else {
-            String str = "GAME OVER";
-            g.setColor(Color.CYAN);
-            g.drawString(str, SIZE/6, SIZE/2);
+            String str = "end of this game";
+            g.setColor(Color.BLACK);
+            g.drawString(str, SIZE/3, SIZE/3);
         }
     }
 
     public void checkCollision(){
 
-           for (int i = 0; i < dots ; i++) {
+           for (int i = sizeSnake; i > 0 ; i--) {
               if (x[0] == x[i] && y[0] == y[i]) {
                 inGame = false;
             }
           }
-
 
          if (x[0] > SIZE)
              x[0] = 0;
@@ -99,10 +96,72 @@ public class GameField extends JPanel implements ActionListener {
             x[0] = SIZE;
 
          if (y[0] > SIZE)
-             y[0] = 0;
+             inGame = false;
 
          if (y[0] < 0)
-             y[0] = SIZE;
+             inGame = false;
     }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (inGame) {
+            checkApple();;
+            checkCollision();;
+            move();
+        }
+        repaint();
     }
+
+    public  GameField(){
+        setBackground(Color.green);
+        loadImage();
+        initGame();
+        addKeyListener(new FiledKeyListener());
+        setFocusable(true);
+    }
+    public void  move(){
+        for (int i = sizeSnake; i > 0 ; i--) {
+            x[i] = x[i - 1];
+            y[i] = y[i - 1];
+        }
+        if (left)
+            x[0] -= DOT_SIZE;
+        if (right)
+            x[0] += DOT_SIZE;
+        if (up)
+            y[0] -= DOT_SIZE;
+        if (down)
+            y[0] += DOT_SIZE;
+    }
+
+    class FiledKeyListener extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            super.keyPressed(e);
+            int key = e.getKeyCode();
+
+            if (key == KeyEvent.VK_LEFT && !right) {
+                left = true;
+                up = false;
+                down = false;
+            }
+            if (key == KeyEvent.VK_RIGHT && !left) {
+                right = true;
+                up = false;
+                down = false;
+            }
+            if (key == KeyEvent.VK_UP && !down) {
+                up = true;
+                left = false;
+                right = false;
+            }
+            if (key == KeyEvent.VK_DOWN && !up) {
+                down = true;
+                left = false;
+                right = false;
+            }
+        }
+    }
+}
+
+
 
