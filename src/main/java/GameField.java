@@ -89,11 +89,11 @@ public class GameField extends JPanel implements ActionListener {
             }
           }
 
-         if (x[0] > SIZE-1)
+         if (x[0] > SIZE)
              x[0] = 0;
 
          if (x[0] < 0)
-            x[0] = SIZE-1;
+            x[0] = SIZE;
 
          if (y[0] > SIZE)
              inGame = false;
